@@ -104,4 +104,7 @@ Aulas web do curso de Sistemas Web I, incluindo conceitos de HTML, CSS e JavaScr
 - [SQLite](https://www.sqlite.org/index.html) - Banco de dados utilizado para persistência de dados.
 - [Node.js](https://nodejs.org/) - Ambiente de execução JavaScript utilizado para o servidor.
 
+Layout das Paginas 
+<img width="1361" height="719" alt="banco de dados interface" src="https://github.com/user-attachments/assets/e198782c-a600-4a62-8340-d2e2645a8c3f" />
+
 
