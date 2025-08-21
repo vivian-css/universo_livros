@@ -93,6 +93,7 @@ O projeto pode ser aprimorado com a adição de recursos como recomendações pe
 de usuários e integração com sistemas de pagamento.
 A experiência adquirida no desenvolvimento deste projeto contribuiu significativamente para o aprendizado e compreensão dos conceitos de
 desenvolvimento web, além de proporcionar uma visão prática de como criar um sistema completo e funcional.
+Para visualizar apresentação do projeto abra o link:  https://youtu.be/pJNnKZJb7Ko
 
 **7. Referências**
 Aulas web do curso de Sistemas Web I, incluindo conceitos de HTML, CSS e JavaScript.
@@ -102,4 +103,5 @@ Aulas web do curso de Sistemas Web I, incluindo conceitos de HTML, CSS e JavaScr
 - [Bootstrap](https://getbootstrap.com/) - Framework CSS utilizado para responsividade e design.
 - [SQLite](https://www.sqlite.org/index.html) - Banco de dados utilizado para persistência de dados.
 - [Node.js](https://nodejs.org/) - Ambiente de execução JavaScript utilizado para o servidor.
+
 
