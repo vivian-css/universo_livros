@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gerenciar Livros</title>
+<style>
+  body { font-family: Arial, sans-serif; margin: 20px; background:#fff8f0; }
+  h1,h2 { color:#cc6600; }
+  table { width:100%; border-collapse: collapse; margin-top: 15px; background:#fff3e6; }
+  th, td { padding: 8px; border: 1px solid #ffcc99; text-align: left; }
+  form { margin-bottom: 20px; max-width: 500px; background:#fff3e6; padding:15px; border-radius:8px; }
+  input, select, textarea { margin: 4px 0; padding: 6px; width: 100%; box-sizing: border-box; border-radius:5px; border:1px solid #ccc; }
+  button { margin-top: 5px; padding: 6px 10px; border:none; border-radius:5px; cursor:pointer; background:#ff9933; color:white; }
+  button:hover { background:#e68a00; }
+</style>
+</head>
+<body>
+
+<h1>Gerenciar Livros</h1>
+
+<h2>Adicionar / Editar Livro</h2>
+<form id="livroForm">
+  <input type="hidden" id="livroId">
+  <label>Título:</label>
+  <input type="text" id="titulo" required>
+  <label>Gênero:</label>
+  <select id="genero" required>
+    <option value="">Selecione</option>
+   <option value="todos">Todos os gêneros</option>
+    <option value="Romance">Romance</option>
+    <option value="Ficção">Ficção</option>
+    <option value="Infantil">Infantil</option>
+    <option value="Autoajuda">Autoajuda</option>
+    <option value="Biografia">Biografia</option>
+    <option value="Fantasia">Fantasia</option>
+    <option value="Mistério">Mistério</option>
+    <option value="História">História</option>
+    <option value="Terror">Terror</option>
+    <option value="Poesia">Poesia</option>
+  </select>
+  <label>Descrição:</label>
+  <textarea id="descricao" required></textarea>
+  <label>Preço:</label>
+  <input type="number" id="preco" step="0.01" required>
+  <button type="submit">Salvar</button>
+</form>
+
+<button id="resetBanco">Resetar Banco e Inserir Livros de Teste</button>
+
+<h2>Lista de Livros</h2>
+<table>
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Título</th>
+      <th>Gênero</th>
+      <th>Preço</th>
+      <th>Ações</th>
+    </tr>
+  </thead>
+  <tbody id="listaLivros"></tbody>
+</table>
+
+<script>
+// carregar livros
+async function carregarLivros(){
+  const res = await fetch('/api/livros');
+  const livros = await res.json();
+  const tbody = document.getElementById('listaLivros');
+  tbody.innerHTML = '';
+  livros.forEach(l => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${l.id}</td>
+      <td>${l.titulo}</td>
+      <td>${l.genero}</td>
+      <td>R$ ${l.preco.toFixed(2)}</td>
+      <td>
+        <button onclick="editarLivro(${l.id})">Editar</button>
+        <button onclick="excluirLivro(${l.id})">Excluir</button>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+// Editar livro
+async function editarLivro(id){
+  const res = await fetch('/api/livros/' + id);
+  const l = await res.json();
+  document.getElementById('livroId').value = l.id;
+  document.getElementById('titulo').value = l.titulo;
+  document.getElementById('genero').value = l.genero;
+  document.getElementById('descricao').value = l.descricao;
+  document.getElementById('preco').value = l.preco;
+}
+
+//Excluir livro
+async function excluirLivro(id){
+  if(confirm('Deseja excluir este livro?')){
+    await fetch('/api/livros/' + id, { method: 'DELETE' });
+    carregarLivros();
+  }
+}
+
+// Adicionar ou Atualizar livro 
+document.getElementById('livroForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  const id = document.getElementById('livroId').value;
+  const livro = {
+    titulo: document.getElementById('titulo').value,
+    genero: document.getElementById('genero').value,
+    descricao: document.getElementById('descricao').value,
+    preco: parseFloat(document.getElementById('preco').value)
+  };
+  if(id){
+    await fetch('/api/livros/' + id, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(livro)
+    });
+  } else {
+    await fetch('/api/livros', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(livro)
+    });
+  }
+  e.target.reset();
+  document.getElementById('livroId').value = '';
+  carregarLivros();
+});
+
+// Resetar banco com livros de teste
+document.getElementById('resetBanco').addEventListener('click', async () => {
+  if(confirm('Isso apagará todos os livros atuais e criará livros de teste. Continuar?')){
+    await fetch('/resetar-banco'); // rota existente no seu server.js
+    carregarLivros();
+    alert('Banco resetado com livros de teste inseridos!');
+  }
+});
+
+
+carregarLivros();
+</script>
+
+</body>
+</html>

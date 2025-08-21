@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Catálogo - Universo dos Livros</title>
+<link rel="stylesheet" href="style.css">
+<link rel="icon" href="img/favicon.png" type="image/png">
+</head>
+<body>
+
+<header>
+  <h1>Universo dos Livros</h1>
+  <nav>
+    <ul class="menu">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="catalogo.html">Catálogo</a></li>
+      <li><a href="pedidos.html">Pedidos</a></li>
+      <li><a href="cadastro.html">Cadastro</a></li>
+      <li><a href="login.html">Login</a></li>
+      <li><a href="carrinho.html">Carrinho (<span id="cartCount">0</span>)</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main>
+  <h2>Catálogo de Livros</h2>
+
+  <!-- Barra de busca + filtros -->
+  <div class="search-form">
+    <input type="text" id="busca" placeholder="Buscar livro por nome...">
+    <button id="btnBusca" title="Pesquisar">🔍</button>
+    <select id="filtro">
+      <option value="todos">Todos os gêneros</option>
+      <option value="Romance">Romance</option>
+      <option value="Ficção">Ficção</option>
+      <option value="Infantil">Infantil</option>
+      <option value="Autoajuda">Autoajuda</option>
+      <option value="Biografia">Biografia</option>
+      <option value="Fantasia">Fantasia</option>
+      <option value="Mistério">Mistério</option>
+      <option value="História">História</option>
+      <option value="Terror">Terror</option>
+      <option value="Poesia">Poesia</option>
+    </select>
+  </div>
+
+  <!-- Grid de livros -->
+  <div class="books-grid" id="booksGrid"></div>
+</main>
+
+<footer>&copy; 2025 Universo dos Livros</footer>
+
+<script>
+// =================== USUÁRIO ===================
+let usuarioLogado = JSON.parse(localStorage.getItem('usuario')) || null;
+
+// Atualiza menu login/logout
+function atualizarMenu() {
+  const menu = document.querySelector('.menu');
+  if (!menu) return;
+  if (usuarioLogado) {
+    const liLogin = menu.querySelector('li a[href="login.html"]');
+    const liCadastro = menu.querySelector('li a[href="cadastro.html"]');
+    if (liLogin) { liLogin.textContent = 'Logout'; liLogin.onclick = e => { e.preventDefault(); localStorage.removeItem('usuario'); usuarioLogado=null; window.location.reload(); }; }
+    if (liCadastro) liCadastro.style.display='none';
+  }
+}
+atualizarMenu();
+
+// =================== CARRINHO ===================
+let carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
+
+function atualizarCarrinhoUI() {
+  const cartCount = document.getElementById('cartCount');
+  if(cartCount) cartCount.textContent = carrinho.reduce((acc,i)=>acc+i.quantidade,0);
+}
+
+function adicionarAoCarrinho(livro) {
+  const index = carrinho.findIndex(i => i.id===livro.id);
+  if(index>=0) carrinho[index].quantidade+=1;
+  else carrinho.push({...livro, quantidade:1});
+  localStorage.setItem('carrinho', JSON.stringify(carrinho));
+  atualizarCarrinhoUI();
+  alert(`${livro.titulo} adicionado ao carrinho!`);
+}
+
+atualizarCarrinhoUI();
+
+// =================== CATALOGO ===================
+const filtro = document.getElementById('filtro');
+const busca = document.getElementById('busca');
+const btnBusca = document.getElementById('btnBusca');
+const booksGrid = document.getElementById('booksGrid');
+
+function carregarLivros() {
+  let url = '/api/livros';
+  const genero = filtro.value;
+  const termoBusca = busca.value.trim();
+  const queryParams = [];
+  if (genero && genero!=='todos') queryParams.push(`genero=${encodeURIComponent(genero)}`);
+  if (termoBusca) queryParams.push(`busca=${encodeURIComponent(termoBusca)}`);
+  if(queryParams.length>0) url += '?' + queryParams.join('&');
+
+  fetch(url)
+    .then(res=>res.json())
+    .then(livros=>{
+      booksGrid.innerHTML='';
+      if(livros.length===0){ booksGrid.innerHTML="<p>Nenhum livro encontrado.</p>"; return; }
+
+      livros.forEach(livro=>{
+        const card = document.createElement('div');
+        card.classList.add('card');
+
+        card.innerHTML=`
+          <img src="img/livro${livro.id}.jpg" alt="${livro.titulo}">
+          <h3>${livro.titulo}</h3>
+          <p class="price">R$ ${livro.preco.toFixed(2)}</p>
+          <p class="descricao">${livro.descricao.length>50 ? livro.descricao.substring(0,50)+'...' : livro.descricao}</p>
+        `;
+
+        // Botão adicionar ao carrinho (forma segura)
+        const btn = document.createElement('button');
+        btn.textContent='Adicionar ao Carrinho';
+        btn.addEventListener('click',()=>adicionarAoCarrinho({
+          id:livro.id,
+          titulo:livro.titulo,
+          preco:livro.preco,
+          imagem:`img/livro${livro.id}.jpg`
+        }));
+        card.appendChild(btn);
+
+        // Botão ver detalhes
+        const btnDetalhes = document.createElement('button');
+        btnDetalhes.textContent='Ver Detalhes';
+        btnDetalhes.addEventListener('click',()=>window.location.href=`detalhes.html?id=${livro.id}`);
+        card.appendChild(btnDetalhes);
+
+        booksGrid.appendChild(card);
+      });
+    })
+    .catch(err=>console.error('Erro ao carregar livros:',err));
+}
+
+filtro.addEventListener('change',carregarLivros);
+busca.addEventListener('input',carregarLivros);
+btnBusca.addEventListener('click',e=>{e.preventDefault();carregarLivros();});
+busca.addEventListener('keypress',e=>{if(e.key==='Enter'){e.preventDefault();carregarLivros();}});
+
+// Carrega livros ao abrir a página
+carregarLivros();
+</script>
+
+</body>
+</html>

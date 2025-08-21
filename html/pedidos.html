@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pedidos - Universo dos Livros</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+  <h1>Universo dos Livros</h1>
+  <nav>
+    <ul class="menu">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="catalogo.html">Catálogo</a></li>
+      <li><a href="sobre.html">Sobre Nós</a></li>
+      <li><a href="pedidos.html">Pedidos</a></li>
+      <li id="usuarioMenu" style="margin-left:auto;"></li>
+    </ul>
+  </nav>
+</header>
+
+<main>
+  <h2>Meus Pedidos</h2>
+  <table class="pedidos-table">
+    <thead>
+      <tr>
+        <th>Pedido</th>
+        <th>Data</th>
+        <th>Itens</th>
+        <th>Total</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody id="listaPedidos">
+      <tr><td colspan="5">Carregando pedidos...</td></tr>
+    </tbody>
+  </table>
+</main>
+
+<footer>
+  &copy; 2025 Universo dos Livros | Todos os direitos reservados
+</footer>
+
+<script>
+// usuário precisa estar logado
+let usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
+if(!usuarioLogado){
+  alert('Você precisa estar logado para ver seus pedidos.');
+  window.location.href = 'login.html';
+}
+
+// menu usuário
+const usuarioMenu = document.getElementById('usuarioMenu');
+usuarioMenu.innerHTML = `
+  Olá, ${usuarioLogado.nome} 
+  <button id="btnLogout">Logout</button> 
+  <a href="carrinho.html">Carrinho</a>
+`;
+document.getElementById('btnLogout').addEventListener('click', () => {
+  localStorage.removeItem('usuarioLogado');
+  window.location.href = 'index.html';
+});
+
+// pedidos
+async function carregarPedidos() {
+  try {
+    const res = await fetch(`/api/pedidos/${usuarioLogado.id}`);
+    const pedidos = await res.json();
+    const tbody = document.getElementById('listaPedidos');
+    tbody.innerHTML = '';
+    if(pedidos.length === 0){
+      tbody.innerHTML = '<tr><td colspan="5">Nenhum pedido encontrado.</td></tr>';
+      return;
+    }
+    pedidos.forEach(pedido => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>#${pedido.id}</td>
+        <td>${pedido.data}</td>
+        <td>${pedido.itens.map(i => i.titulo).join(', ')}</td>
+        <td>R$ ${pedido.total.toFixed(2)}</td>
+        <td>${pedido.status}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+  } catch(err){
+    console.error('Erro ao carregar pedidos:', err);
+  }
+}
+
+carregarPedidos();
+</script>
+
+</body>
+</html>

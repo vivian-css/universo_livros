@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Carrinho - Universo dos Livros</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+  <h1>Universo dos Livros</h1>
+  <nav>
+    <ul class="menu" id="menuPrincipal">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="catalogo.html">Catálogo</a></li>
+      <li><a href="pedidos.html">Pedidos</a></li>
+      <li><a href="sobre.html">Sobre Nós</a></li>
+      <li id="linkCadastro"><a href="cadastro.html">Cadastro</a></li>
+      <li id="linkLogin"><a href="login.html">Login</a></li>
+      <li><a href="carrinho.html">Carrinho (<span id="cartCount">0</span>)</a></li>
+      <li id="usuarioInfo" style="float:right; margin-left:20px;"></li>
+    </ul>
+  </nav>
+</header>
+
+<main>
+  <h2>Meu Carrinho</h2>
+  <table id="tabelaCarrinho">
+    <thead>
+      <tr>
+        <th>Livro</th>
+        <th>Preço</th>
+        <th>Quantidade</th>
+        <th>Total</th>
+        <th>Ações</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+  <h3 id="totalCarrinho">Total: R$ 0,00</h3>
+  <button id="btnLimpar" style="background:#ff3300;color:white;padding:10px 20px;border:none;border-radius:6px;cursor:pointer;">Limpar Carrinho</button>
+  <button id="btnFinalizar" style="background:#33cc33;color:white;padding:10px 20px;border:none;border-radius:6px;cursor:pointer;">Finalizar Compra</button>
+</main>
+
+<footer>
+  &copy; 2025 Universo dos Livros | Todos os direitos reservados
+</footer>
+
+<script>
+// MENU E USUÁRIO LOGADO
+let usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
+function atualizarMenu(){
+  if(usuarioLogado){
+    document.getElementById('usuarioInfo').innerHTML = `
+      Olá, ${usuarioLogado.nome} <button id="btnLogout">Logout</button>
+    `;
+    document.getElementById('linkLogin').style.display = 'none';
+    document.getElementById('linkCadastro').style.display = 'none';
+    document.getElementById('btnLogout').addEventListener('click', () => {
+      localStorage.removeItem('usuarioLogado');
+      window.location.reload();
+    });
+  } else {
+    document.getElementById('usuarioInfo').textContent = '';
+    document.getElementById('linkLogin').style.display = 'inline';
+    document.getElementById('linkCadastro').style.display = 'inline';
+  }
+}
+atualizarMenu();
+
+// ====== CARRINHO ======
+let carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
+
+function atualizarTabela(){
+  const tbody = document.querySelector('#tabelaCarrinho tbody');
+  tbody.innerHTML = '';
+  let total = 0;
+  carrinho.forEach((item, i) => {
+    const itemTotal = item.preco * item.quantidade;
+    total += itemTotal;
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${item.titulo}</td>
+      <td>R$ ${item.preco.toFixed(2)}</td>
+      <td>${item.quantidade}</td>
+      <td>R$ ${itemTotal.toFixed(2)}</td>
+      <td>
+        <button onclick="removerItem(${i})">Remover</button>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+  document.getElementById('totalCarrinho').textContent = `Total: R$ ${total.toFixed(2)}`;
+  document.getElementById('cartCount').textContent = carrinho.length;
+}
+
+function removerItem(index){
+  carrinho.splice(index, 1);
+  localStorage.setItem('carrinho', JSON.stringify(carrinho));
+  atualizarTabela();
+}
+
+document.getElementById('btnLimpar').addEventListener('click', () => {
+  if(confirm('Deseja limpar o carrinho?')){
+    carrinho = [];
+    localStorage.setItem('carrinho', JSON.stringify(carrinho));
+    atualizarTabela();
+  }
+});
+
+document.getElementById('btnFinalizar').addEventListener('click', () => {
+  if(!usuarioLogado){
+    alert('Você precisa estar logado para finalizar a compra.');
+    window.location.href = 'login.html';
+    return;
+  }
+  window.location.href = 'finalizar.html';
+});
+
+atualizarTabela();
+</script>
+
+</body>
+</html>

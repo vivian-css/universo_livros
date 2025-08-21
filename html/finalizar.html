@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Finalizar Compra - Universo dos Livros</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+  <h1>Universo dos Livros</h1>
+  <nav>
+    <ul class="menu">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="catalogo.html">Catálogo</a></li>
+      <li><a href="pedidos.html">Pedidos</a></li>
+      <li id="usuarioInfo" style="margin-left:auto;"></li>
+    </ul>
+  </nav>
+</header>
+
+<main>
+  <h2>Finalizar Compra</h2>
+  <table id="tabelaFinalizar">
+    <thead>
+      <tr>
+        <th>Livro</th>
+        <th>Preço</th>
+        <th>Quantidade</th>
+        <th>Total</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <h3 id="totalFinalizar">Total: R$ 0,00</h3>
+
+  <h3>Escolha o método de pagamento:</h3>
+  <label><input type="radio" name="pagamento" value="pix" checked> PIX</label>
+  <label><input type="radio" name="pagamento" value="cartao"> Cartão</label>
+
+  <button id="btnConfirmar" style="background:#33cc33;color:white;padding:10px 20px;border:none;border-radius:6px;cursor:pointer;">Confirmar Compra</button>
+</main>
+
+<footer>
+  &copy; 2025 Universo dos Livros | Todos os direitos reservados
+</footer>
+
+<script>
+//  USUÁRIO LOGADO
+let usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
+if(!usuarioLogado){
+  alert('Você precisa estar logado para finalizar a compra.');
+  window.location.href = 'login.html';
+}
+
+// Atualiza info do usuário no menu
+document.getElementById('usuarioInfo').innerHTML = `
+  Olá, ${usuarioLogado.nome} <button id="btnLogout">Logout</button>
+`;
+document.getElementById('btnLogout').addEventListener('click', () => {
+  localStorage.removeItem('usuarioLogado');
+  window.location.href = 'index.html';
+});
+
+//carrinho
+let carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
+if(carrinho.length === 0){
+  alert('Carrinho vazio!');
+  window.location.href = 'carrinho.html';
+}
+
+// carregar itens do carrinho 
+function carregarFinalizacao(){
+  const tbody = document.querySelector('#tabelaFinalizar tbody');
+  tbody.innerHTML = '';
+  let total = 0;
+  carrinho.forEach(item => {
+    const itemTotal = item.preco * item.quantidade;
+    total += itemTotal;
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${item.titulo}</td>
+      <td>R$ ${item.preco.toFixed(2)}</td>
+      <td>${item.quantidade}</td>
+      <td>R$ ${itemTotal.toFixed(2)}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+  document.getElementById('totalFinalizar').textContent = `Total: R$ ${total.toFixed(2)}`;
+}
+carregarFinalizacao();
+
+//confirmar compra
+document.getElementById('btnConfirmar').addEventListener('click', async () => {
+  const metodo = document.querySelector('input[name="pagamento"]:checked').value;
+  
+  if(!metodo){
+    alert('Escolha o método de pagamento.');
+    return;
+  }
+
+  try {
+    const pedidoEnvio = carrinho.map(i => ({ id: i.id, quantidade: i.quantidade }));
+    const res = await fetch('/api/finalizar', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({ usuarioId: usuarioLogado.id, carrinho: pedidoEnvio })
+    });
+    const data = await res.json();
+    if(data.success){
+      alert(`Compra realizada com sucesso! Método de pagamento: ${metodo.toUpperCase()}`);
+      carrinho = [];
+      localStorage.setItem('carrinho', JSON.stringify(carrinho));
+      window.location.href = 'pedidos.html';
+    }
+  } catch(err){
+    alert('Erro ao finalizar compra');
+    console.error(err);
+  }
+});
+</script>
+
+</body>
+</html>

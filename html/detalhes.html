@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Detalhes do Livro - Universo dos Livros</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+  <h1>Universo dos Livros</h1>
+  <nav>
+    <ul class="menu">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="catalogo.html">Catálogo</a></li>
+      <li><a href="pedidos.html">Pedidos</a></li>
+      <li><a href="cadastro.html">Cadastro</a></li>
+      <li><a href="login.html">Login</a></li>
+      <li><a href="carrinho.html">Carrinho (<span id="cartCount">0</span>)</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main>
+  <div class="detalhes-livro" id="detalhesLivro">
+   
+  </div>
+</main>
+
+<footer>&copy; 2025 Universo dos Livros</footer>
+
+<script>
+// Carrinho
+let carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
+document.getElementById('cartCount').textContent = carrinho.length;
+
+// ID do livro
+const params = new URLSearchParams(window.location.search);
+const livroId = params.get('id');
+const detalhesDiv = document.getElementById('detalhesLivro');
+
+if(!livroId){
+  detalhesDiv.innerHTML = "<p>Livro não encontrado.</p>";
+} else {
+  fetch(`/api/livros/${livroId}`)
+    .then(res => res.json())
+    .then(livro => {
+      detalhesDiv.innerHTML = `
+        <img src="img/livro${livro.id}.jpg" alt="${livro.titulo}">
+        <h2>${livro.titulo}</h2>
+        <p><strong>Gênero:</strong> ${livro.genero}</p>
+        <p>${livro.descricao}</p>
+        <p class="price">R$ ${livro.preco.toFixed(2)}</p>
+        <button id="btnAddCarrinho">Adicionar ao Carrinho</button>
+      `;
+
+      document.getElementById('btnAddCarrinho').addEventListener('click', () => {
+        const item = {
+          id: livro.id,
+          titulo: livro.titulo,
+          preco: livro.preco,
+          imagem: `img/livro${livro.id}.jpg`,
+          quantidade: 1
+        };
+        // Verifica se já está no carrinho
+        const existente = carrinho.find(i => i.id === livro.id);
+        if(existente){
+          existente.quantidade += 1;
+        } else {
+          carrinho.push(item);
+        }
+        localStorage.setItem('carrinho', JSON.stringify(carrinho));
+        document.getElementById('cartCount').textContent = carrinho.length;
+        alert('Livro adicionado ao carrinho!');
+      });
+    })
+    .catch(err => {
+      console.error('Erro ao carregar livro:', err);
+      detalhesDiv.innerHTML = "<p>Erro ao carregar detalhes do livro.</p>";
+    });
+}
+</script>
+
+</body>
+</html>

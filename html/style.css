@@ -1,0 +1,512 @@
+/* ===== UNIVERSO LIVROS - CSS ===== */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* ===== BODY ===== */
+body {
+  font-family: Arial, sans-serif;
+  line-height: 1.5;
+  background: #FFF5F2; 
+  color: #064232;       
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* ===== HEADER ===== */
+header {
+  background: #568F87;  
+  color: #FFF5F2;
+  padding: 15px 20px;
+  border-radius: 0 0 10px 10px;
+}
+
+header h1 {
+  margin-bottom: 10px;
+  font-size: 1.8rem;
+}
+
+/* ===== MENU ===== */
+nav ul.menu {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+nav ul.menu li {
+  margin-right: 15px;
+}
+
+nav ul.menu li a {
+  color: #FFF5F2;
+  text-decoration: none;
+  font-weight: bold;
+  padding: 6px 12px;
+  border-radius: 5px;
+  transition: background 0.3s ease;
+}
+
+nav ul.menu li a:hover {
+  background: #F5BABB;
+}
+
+/* ===== ITENS À DIREITA ===== */
+nav ul.menu li#usuarioInfo,
+nav ul.menu li:last-child {
+  margin-left: auto;
+}
+
+nav ul.menu li#usuarioInfo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+nav ul.menu li#usuarioInfo button {
+  padding: 4px 8px;
+  font-size: 0.9em;
+  cursor: pointer;
+  border: none;
+  border-radius: 4px;
+  background: #568F87;
+  color: #FFF5F2;
+}
+
+nav ul.menu li#usuarioInfo button:hover {
+  background: #064232;
+}
+
+
+main {
+  flex: 1;
+  padding: 20px;
+}
+
+/* ===== GRID DE LIVROS ===== */
+
+.books-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.card {
+  background: #F5BABB;
+  border-radius: 8px;
+  padding: 10px;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.08);
+  text-align: center;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+}
+
+.card img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 5px;
+}
+
+.card h3 {
+  margin: 10px 0 5px 0;
+  font-size: 1.1em;
+  color: #064232;
+}
+
+.card p {
+  margin-bottom: 5px;
+}
+
+.card .price {
+  font-weight: bold;
+  color: #568F87;
+}
+
+/* ===== BUTTONS ===== */
+button {
+  padding: 8px 12px;
+  background: #568F87;
+  color: #FFF5F2;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+button:hover {
+  background: #064232;
+}
+
+/* ===== TABLES ===== */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+  background: #F5BABB;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+table th,
+table td {
+  padding: 10px;
+  border-bottom: 1px solid #FFF5F2;
+  text-align: left;
+}
+
+table th {
+  background: #568F87;
+  color: #FFF5F2;
+}
+
+table tfoot td {
+  font-weight: bold;
+}
+
+/* ===== FORMS ===== */
+form {
+  background: #F5BABB;
+  padding: 15px;
+  border-radius: 8px;
+  max-width: 450px;
+}
+
+form input[type="text"],
+form input[type="email"],
+form input[type="tel"],
+form input[type="password"],
+form select {
+  width: 100%;
+  padding: 8px 10px;
+  margin: 5px 0 12px 0;
+  border: 1px solid #064232;
+  border-radius: 5px;
+}
+
+form label {
+  font-weight: bold;
+  color: #064232;
+}
+
+/* ===== FOOTER ===== */
+footer {
+  background: #568F87;
+  color: #FFF5F2;
+  padding: 15px 20px;
+  text-align: center;
+  margin-top: auto;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+  nav ul.menu {
+    flex-direction: column;
+    gap: 5px;
+  }
+  
+  .books-grid {
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  }
+}
+
+@media (max-width: 480px) {
+  header h1 {
+    font-size: 1.5rem;
+  }
+
+  .card h3 {
+    font-size: 1em;
+  }
+}
+
+/* ===== HEADER ADICIONAL ===== */
+.header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+/* Logo */
+.logo-universo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo-universo img {
+  height: 50px;
+  width: auto;
+}
+
+/* Menu centralizado */
+nav.menu-principal {
+  display: flex;
+  justify-content: center;
+  flex: 1;
+}
+
+nav.menu-principal ul {
+  list-style: none;
+  display: flex;
+  gap: 20px;
+  margin: 0;
+  padding: 0;
+}
+
+nav.menu-principal ul li a {
+  color: #FFF5F2;
+  text-decoration: none;
+  font-weight: bold;
+  padding: 6px 12px;
+  border-radius: 5px;
+  transition: background 0.3s;
+}
+
+nav.menu-principal ul li a:hover {
+  background: #F5BABB;
+}
+
+/* Menu direito: carrinho + login/logout */
+.menu-direita {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.btn-carrinho {
+  background: #568F87;
+  color: #FFF5F2;
+  font-weight: bold;
+  padding: 6px 12px;
+  border-radius: 20px;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+  transition: transform 0.2s, background 0.3s;
+}
+
+.btn-carrinho:hover {
+  background: #064232;
+  transform: scale(1.05);
+}
+
+button#btnLogout {
+  background: #568F87;
+  border: none;
+  color: #FFF5F2;
+  padding: 6px 12px;
+  border-radius: 20px;
+  cursor: pointer;
+}
+
+button#btnLogout:hover {
+  background: #064232;
+}
+
+a.btn-login, a.btn-cadastro {
+  color: #FFF5F2;
+  font-weight: bold;
+  text-decoration: none;
+  padding: 6px 12px;
+  border-radius: 20px;
+  background: #568F87;
+  transition: background 0.3s;
+}
+
+a.btn-login:hover, a.btn-cadastro:hover {
+  background: #064232;
+}
+
+/* Folder chamativo */
+.folder-chamativo {
+  margin: 20px 0;
+  padding: 30px 20px;
+  background: #568F87;
+  border-radius: 12px;
+  text-align: center;
+  color: #FFF5F2;
+  position: relative;
+  overflow: hidden;
+}
+
+.folder-chamativo h2 {
+  font-size: 2rem;
+  margin-bottom: 10px;
+}
+
+.folder-chamativo p {
+  font-size: 1.1rem;
+  margin-bottom: 20px;
+}
+
+.folder-chamativo a {
+  display: inline-block;
+  padding: 12px 25px;
+  background: #FFF5F2;
+  color: #568F87;
+  font-weight: bold;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: transform 0.2s, background 0.2s;
+}
+
+.folder-chamativo a:hover {
+  background: #F5BABB;
+  transform: scale(1.05);
+}
+
+.folder-chamativo::before {
+  content: "📚";
+  font-size: 6rem; /* aumentei de 4rem para 6rem */
+  position: absolute;
+  top: 10px;
+  right: 20px;
+  opacity: 0.2;
+}
+
+
+/* Barra de pesquisa */
+.barra-pesquisa input {
+  padding: 6px 10px;
+  border-radius: 5px;
+  border: none;
+  outline: none;
+}
+
+.barra-pesquisa button {
+  padding: 6px 10px;
+  border-radius: 5px;
+  border: none;
+  background: #568F87;
+  color: #FFF5F2;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.barra-pesquisa button:hover {
+  background: #064232;
+}
+
+/* ===== BARRA DE BUSCA E FILTRO ===== */
+.search-form {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  align-items: center;
+}
+
+.search-form input {
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  flex: 1;
+}
+
+.search-form button {
+  background: #568F87; /* cor atualizada do botão */
+  border: none;
+  padding: 10px 15px;
+  border-radius: 8px;
+  color: #FFF5F2;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background 0.3s ease;
+}
+
+.search-form button:hover {
+  background: #064232;
+}
+
+.search-form select {
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+/* ===== GRID DE LIVROS ===== */
+.books-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+}
+
+/* ===== CARDS ===== */
+.card {
+  background: #F5BABB;
+  border-radius: 8px;
+  padding: 10px;
+  text-align: center;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.08);
+}
+
+.card img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 5px;
+}
+
+.card h3 {
+  margin: 10px 0 5px 0;
+  font-size: 1.1em;
+  color: #064232;
+}
+
+.card p {
+  margin: 5px 0;
+}
+
+.card .price {
+  font-weight: bold;
+  color: #568F87;
+}
+
+/* ===== BOTÕES ===== */
+.card button {
+  margin: 5px 5px 0 5px;
+  padding: 8px 12px;
+  border-radius: 5px;
+  border: none;
+  background: #568F87;
+  color: #FFF5F2;
+  cursor: pointer;
+}
+
+.card button:hover {
+  background: #064232;
+}
+
+/* ===== FOOTER ===== */
+footer {
+  background: #568F87;
+  color: #FFF5F2;
+  padding: 15px 20px;
+  text-align: center;
+  margin-top: 20px;
+}
+
+
+/* Preço promocional apenas na home/index */
+#index .preco-antigo {
+  text-decoration: line-through;
+  color: #555;
+  margin-right: 8px;
+  font-size: 0.9em;
+}
+
+#index .preco-promocao {
+  color: red;
+  font-weight: bold;
+  font-size: 1.1em;
+}

@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Home - Universo dos Livros</title>
+<link rel="stylesheet" href="style.css">
+<link rel="icon" href="img/favicon.png" type="image/png">
+</head>
+<body>
+
+<header>
+  <div class="header-container">
+    <div class="logo-universo">
+      <img src="img/logo.png" alt="Logo Universo dos Livros">
+      <h1>Universo dos Livros</h1>
+    </div>
+
+    <nav class="menu-principal">
+      <ul class="menu-esquerda">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="catalogo.html">Catálogo</a></li>
+        <li><a href="pedidos.html">Pedidos</a></li>
+        <li><a href="sobre.html">Sobre Nós</a></li>
+      </ul>
+    </nav>
+
+    <div class="menu-direita" id="menuUsuario"></div>
+  </div>
+
+  <!-- Barra de pesquisa centralizada -->
+  <div style="margin-top:10px; text-align:center;">
+    <input type="text" id="searchInput" placeholder="Pesquisar livros..." style="width: 50%; padding: 8px; border-radius: 4px; border: 1px solid #ccc;">
+    <button id="searchButton" style="padding: 8px; border-radius: 4px; border: 1px solid #ccc;">🔍</button>
+  </div>
+</header>
+
+<main>
+  <section class="folder-chamativo">
+    <h2>Promoção Especial!</h2>
+    <p>Compre 3 livros e ganhe de desconto no total!</p>
+  </section>
+
+  <h2>PROMOÇÕES</h2>
+  <h3>Confira nossos livros com promoção de 30% de Desconto</h3>
+  <div class="books-grid" id="destaques"></div>
+</main>
+
+<footer>&copy; 2025 Universo dos Livros</footer>
+
+<script>
+// ==== Menu de usuário ====
+let usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
+const menuUsuario = document.getElementById('menuUsuario');
+
+function atualizarMenu(){
+  menuUsuario.innerHTML = `<a href="carrinho.html" class="btn-carrinho">🛒 Carrinho (<span id="cartCount">0</span>)</a>`;
+
+  if(usuarioLogado){
+    const spanNome = document.createElement('span');
+    spanNome.textContent = `Olá, ${usuarioLogado.nome}`;
+    const btnLogout = document.createElement('button');
+    btnLogout.textContent = 'Logout';
+    btnLogout.addEventListener('click', () => {
+      localStorage.removeItem('usuarioLogado');
+      window.location.reload();
+    });
+
+    menuUsuario.appendChild(spanNome);
+    menuUsuario.appendChild(btnLogout);
+  } else {
+    const btnLogin = document.createElement('a');
+    btnLogin.href = 'login.html';
+    btnLogin.textContent = 'Login';
+    btnLogin.className = 'btn-login';
+
+    const btnCadastro = document.createElement('a');
+    btnCadastro.href = 'cadastro.html';
+    btnCadastro.textContent = 'Cadastro';
+    btnCadastro.className = 'btn-cadastro';
+
+    menuUsuario.appendChild(btnLogin);
+    menuUsuario.appendChild(btnCadastro);
+  }
+}
+
+atualizarMenu();
+
+// ==== Carrinho ====
+let carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
+document.getElementById('cartCount').textContent = carrinho.length;
+
+function adicionarAoCarrinho(livro){
+  let item = carrinho.find(i => i.id === livro.id);
+  if(item){
+    item.quantidade += 1;
+  } else {
+    livro.quantidade = 1;
+    carrinho.push(livro);
+  }
+  localStorage.setItem('carrinho', JSON.stringify(carrinho));
+  document.getElementById('cartCount').textContent = carrinho.length;
+  alert(`${livro.titulo} adicionado ao carrinho!`);
+}
+
+// ==== Destaques e busca por título ====
+const searchInput = document.getElementById('searchInput');
+const searchButton = document.getElementById('searchButton');
+const destaques = document.getElementById('destaques');
+
+function carregarDestaques() {
+  const termoBusca = searchInput.value.trim().toLowerCase();
+
+  fetch('/api/livros')
+    .then(res => res.json())
+    .then(livros => {
+      const resultados = livros.filter(livro =>
+        livro.titulo.toLowerCase().includes(termoBusca)
+      );
+
+      destaques.innerHTML = '';
+      if(resultados.length === 0){
+        destaques.innerHTML = '<p>Nenhum livro encontrado.</p>';
+        return;
+      }
+
+      resultados.slice(0,12).forEach(livro => {
+        const card = document.createElement('div');
+        card.classList.add('card');
+ // Calculando preço promocional (exemplo: 30% de desconto)
+const precoPromocional = (livro.preco * 0.7).toFixed(2);
+
+card.innerHTML = `
+  <img src="img/livro${livro.id}.jpg" alt="${livro.titulo}">
+  <h3>${livro.titulo}</h3>
+  <p class="descricao">${livro.descricao.length > 50 ? livro.descricao.substring(0,50) + '...' : livro.descricao}</p>
+  <p>
+    <span class="preco-antigo">R$ ${livro.preco.toFixed(2)}</span>
+    <span class="preco-promocao">R$ ${precoPromocional}</span>
+  </p>
+  <button onclick='adicionarAoCarrinho({
+    id: ${livro.id},
+    titulo: "${livro.titulo}",
+    preco: ${precoPromocional},
+    imagem: "img/livro${livro.id}.jpg"
+  })'>Adicionar ao Carrinho</button>
+  <button onclick="window.location.href='detalhes.html?id=${livro.id}'">Ver Detalhes</button>
+`;
+        card.querySelector('.preco-antigo').style.textDecoration = 'line-through';
+        card.querySelector('.preco-promocao').style.color = 'red';
+        card.querySelector('.preco-promocao').style.fontWeight = 'bold';
+        card.querySelector('.preco-promocao').style.marginLeft = '10px';
+        card.querySelector('.descricao').style.fontSize = '0.9em';
+        card.querySelector('.descricao').style.color = '#555';  
+
+
+        destaques.appendChild(card);
+      });
+    })
+    .catch(err => console.error('Erro ao carregar destaques:', err));
+}
+
+// Eventos
+searchButton.addEventListener('click', carregarDestaques);
+searchInput.addEventListener('keypress', (e) => { if(e.key==='Enter') carregarDestaques(); });
+
+// Carregar inicialmente
+carregarDestaques();
+</script>
+
+</body>
+</html>
