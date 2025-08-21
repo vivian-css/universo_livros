@@ -102,3 +102,4 @@ Aulas web do curso de Sistemas Web I, incluindo conceitos de HTML, CSS e JavaScr
 - [Bootstrap](https://getbootstrap.com/) - Framework CSS utilizado para responsividade e design.
 - [SQLite](https://www.sqlite.org/index.html) - Banco de dados utilizado para persistência de dados.
 - [Node.js](https://nodejs.org/) - Ambiente de execução JavaScript utilizado para o servidor.
+
