@@ -105,6 +105,14 @@ Aulas web do curso de Sistemas Web I, incluindo conceitos de HTML, CSS e JavaScr
 - [Node.js](https://nodejs.org/) - Ambiente de execução JavaScript utilizado para o servidor.
 
 Layout das Paginas 
-<img width="1361" height="719" alt="banco de dados interface" src="https://github.com/user-attachments/assets/e198782c-a600-4a62-8340-d2e2645a8c3f" />
+<img width="1328" height="633" alt="inicial" src="https://github.com/user-attachments/assets/dad8bae7-0ac6-4457-834b-92814ad5fdb7" />
+<img width="1332" height="569" alt="catalogo" src="https://github.com/user-attachments/assets/79adb5a5-f805-4c4a-91d0-f36f290213e8" />
+<img width="1362" height="344" alt="carrinho" src="https://github.com/user-attachments/assets/29873c88-b605-43a3-b354-4173c842d798" />
+<img width="1355" height="643" alt="cadastro" src="https://github.com/user-attachments/assets/3ca14f88-f0c2-4818-95bc-b0564f1a376a" />
+<img width="1362" height="304" alt="login" src="https://github.com/user-attachments/assets/c1dbefcf-25c8-4b2c-a92c-bbe14d5357a0" />
+<img width="1341" height="641" alt="sobre" src="https://github.com/user-attachments/assets/e95ca0fa-7f80-46f6-88ac-a8061e314adb" />
+<img width="1361" height="719" alt="banco de dados interface" src="https://github.com/user-attachments/assets/e0566478-ec71-49b6-8f14-810823b5a792" />
+
+
 
 
